@@ -78,8 +78,8 @@ def count_collection(obj_collection):
 
 def find_imports(target, rules_dir) -> List[SemgreplImport]:
     # TODO: generalize across other langs
-
-    matches = semgrep_pattern("", [target], config)
+    rule_path = os.path.join(rules_dir, "python", "python-imports.yaml")
+    matches = semgrep_pattern("", [target], rule_path)
 
     import_matches = [SemgreplImport(x) for x in matches['results']]
     matches = collect_imports(import_matches)
@@ -87,8 +87,9 @@ def find_imports(target, rules_dir) -> List[SemgreplImport]:
     return matches
 
 def find_function_calls(target, rules_dir, function_name) -> List[SemgreplImport]:
-    env = Environment(loader = FileSystemLoader(rules_dir), trim_blocks=True, lstrip_blocks=True)
-    template = env.get_template('python/function-calls.yaml')
+    python_rules_dir = os.path.join(rules_dir, "python")
+    env = Environment(loader = FileSystemLoader(python_rules_dir), trim_blocks=True, lstrip_blocks=True)
+    template = env.get_template("function-calls.yaml")
     rendered_config = template.render(function_name=function_name)
 
     # This is ugly, but semgrep_main wants a config file path...
