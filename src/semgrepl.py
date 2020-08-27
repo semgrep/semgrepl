@@ -10,6 +10,7 @@ class SemgreplImport(SemgreplObject):
         self.file_path = match['path']
         self.start = match['start']
         self.end = match['end']
+        self.match = match
 
         if '$X' in metavars:
             self.import_path = metavars['$X']['abstract_content']
@@ -34,6 +35,7 @@ class SemgreplFunctionCall(SemgreplObject):
         self.end = match['end']
         self.name = function_name
         self.instance = None
+        self.match = match
 
         if '$X' in metavars:
             self.instance = metavars['$X']['abstract_content']
@@ -53,6 +55,7 @@ class SemgreplFunctionDef(SemgreplObject):
         self.file_path = match['path']
         self.start = match['start']
         self.end = match['end']
+        self.match = match
 
         if function_name != "$X":
             self.name = function_name
@@ -75,6 +78,7 @@ class SemgreplClass(SemgreplObject):
     def __init__(self, match):
         self.file_path = match['path']
         metavars = match['extra']['metavars']
+        self.match = match
 
         if '$X' in metavars:
             self.name = metavars['$X']['abstract_content']
