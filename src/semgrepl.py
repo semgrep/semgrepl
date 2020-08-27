@@ -64,6 +64,14 @@ class SemgreplFunctionDef(SemgreplObject):
         else:
             print("Failed on file: " + self.file_path)
             self.name = "FAILED"
+    @property
+    def annotations(self):
+        annotations = []
+        lines = self.match['extra']['lines']
+        for l in lines.split("\n"):
+            if "@" in l:
+                annotations.append(l.strip())
+        return annotations
 
     def __repr__(self):
         return "<SemgreplFunctionDef file_path={} name={}>".format(self.file_path, self.name)
