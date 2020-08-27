@@ -64,6 +64,7 @@ class SemgreplFunctionDef(SemgreplObject):
         else:
             print("Failed on file: " + self.file_path)
             self.name = "FAILED"
+
     @property
     def annotations(self):
         annotations = []
@@ -83,12 +84,14 @@ class SemgreplFunctionDef(SemgreplObject):
         return self.file_path == other.file_path and self.name == other.name
 
 class SemgreplClass(SemgreplObject):
-    def __init__(self, match):
+    def __init__(self, match, class_name=None):
         self.file_path = match['path']
         metavars = match['extra']['metavars']
         self.match = match
 
-        if '$X' in metavars:
+        if class_name != "$X":
+            self.name = class_name
+        elif '$X' in metavars:
             self.name = metavars['$X']['abstract_content']
         else:
             print("Failed on file: " + self.file_path)
