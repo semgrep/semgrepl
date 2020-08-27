@@ -94,3 +94,11 @@ def find_all_classes(target, rules_dir):
     matches = semgrep_pattern("", [target], rule_path)
     class_matches = [semgrepl.SemgreplClass(x) for x in matches['results']]
     return class_matches
+
+def all_annotations(target, rules_dir):
+    annotations = set()
+    all_functions = find_all_function_defs(target, rules_dir)
+    for f in all_functions:
+        for a in f.annotations:
+            annotations.add(a)
+    return annotations
