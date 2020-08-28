@@ -1,0 +1,10 @@
+rules:
+    - id: python-function-defs
+      message: function definition {{function_name}}
+      pattern: |
+        def {{function_name}}(...):
+          ...
+      message: |
+        Match found
+      languages: [python]
+      severity: WARNING
