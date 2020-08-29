@@ -136,7 +136,7 @@ def semgrep_pattern(pattern: str, targets: List[str], config = ""):
     )
     semgrep.semgrep_main.main(
         output_handler=output_handler,
-        target=[str(t) for t in targets],
+        target=[str(os.path.abspath(t)) for t in targets],
         pattern=pattern,
         config=config,
         lang="python")
