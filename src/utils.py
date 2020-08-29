@@ -2,7 +2,7 @@ import json
 import os
 import tempfile
 from collections import defaultdict
-from typing import List
+from typing import List, Dict
 from io import StringIO
 from semgrep.output import OutputHandler
 from semgrep.output import OutputSettings
@@ -10,6 +10,7 @@ from semgrep.constants import OutputFormat
 import semgrep.semgrep_main
 from jinja2 import Environment, FileSystemLoader
 import semgrepl
+import tokei
 
 # Prompt user during setup to define the scope of what they're testing 
 # (probably a repo), and the base rules dir.
@@ -17,7 +18,6 @@ import semgrepl
 #
 # These will be used by default in various commands unless another
 # value is explicitly passed in.
-
 
 #
 # How to automagically do the right thing across many languages?
@@ -121,19 +121,6 @@ import semgrepl
 # 3. Bring up the relevant code
 #
 # -- Stretch: be able to annotate the code non destructively / share notes --
-class SemgreplConfig:
-    def __init__(self, targets = None, rules_dir = "", default_language = ""):
-        self.rules_dir = rules_dir
-        self.default_language = default_language
-
-        if targets is None:
-            self.targets = []
-        else:
-            self.targets = targets
-        
-
-# $CUR_CONFIG = SemgreplConfig()
-# implicly use ^ if not otherwise specified
 
 
 def semgrep_pattern(pattern: str, targets: List[str], config = ""):
