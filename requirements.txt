@@ -1,2 +1,2 @@
-semgrep==0.21.0
+semgrep==0.20.0
 Jinja2==2.11.2

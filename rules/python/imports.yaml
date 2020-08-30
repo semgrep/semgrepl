@@ -1,0 +1,10 @@
+rules:
+    - id: python-imports
+      message: $X
+      languages: [python]
+      severity: WARNING
+      metadata:
+        category: "import"
+      pattern-either:
+        - pattern: |
+            import $MODULE

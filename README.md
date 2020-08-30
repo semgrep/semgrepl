@@ -41,8 +41,8 @@ import utils
 For example, to find all function definitions in the file `semgrepl.py`.
 
 ```
-target = 'semgrepl.py'
-rules_dir = '../rules'
+target = 'semgrepl/main.py'
+rules_dir = 'rules'
 utils.find_all_function_defs(target, rules_dir)
 ```
 

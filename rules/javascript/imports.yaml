@@ -1,0 +1,18 @@
+rules:
+    - id: javascript-imports
+      message: $X
+      languages: [javascript]
+      severity: WARNING
+      metadata:
+        category: "import"
+      pattern-either:
+        - pattern: |
+            import $NAME from "$MODULE";
+        - pattern: |
+            import { $NAME } from "$MODULE";
+        - pattern: |
+            import * as $NAME from "$MODULE";
+        - pattern: |
+            import "$MODULE";
+        - pattern: |
+            var $NAME = import($MODULE);
