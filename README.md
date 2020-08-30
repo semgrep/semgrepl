@@ -33,17 +33,12 @@ $ ipython --debug -c 'exit()'
 The main entrypoint into semgrepl is `utils.py` which can be loaded in ipython
 with:
 
-```
-# From src directory
-import utils
-```
 
-For example, to find all function definitions in the file `semgrepl.py`.
-
+For example, to find all function definitions in the file `semgrepl/main.py`.
 ```
-target = 'semgrepl/main.py'
-rules_dir = 'rules'
-utils.find_all_function_defs(target, rules_dir)
+import semgrepl.main as sm
+c = sm.init("semgrepl/main.py")
+sm.find_all_function_defs(c)
 ```
 
 ### `semgrepl_init`
@@ -53,16 +48,16 @@ Oftentimes you have a specific target repo(s) in mind.
 Use `semgrepl_init` to set your "working directory" of rules and target repo dirs, so you don't have pass them in to every semgrepl function.
 
 ~~~python
-import semgrepl
+import semgrepl.main as sm
 # Add 1 dir as a target
-semgrepl.semgrepl_init(path_to_repo)
+c = sm.init(path_to_repo)
 
-# Add every dir in a directory as a target, uses glob.glob()
-semgrepl.semgrepl_init_dir("Users/me/target_repos/*")
+# Or, Add every dir in a directory as a target, uses glob.glob()
+c = sml.init_dir("Users/me/target_repos/*")
 
 # Examine the config that's been set up
-semgrepl.config
+c
 
 # See the various tech stacks used
-semgrepl.config.print_languages_used()
+c.print_languages_used()
 ~~~
