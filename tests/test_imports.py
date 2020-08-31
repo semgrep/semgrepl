@@ -14,6 +14,12 @@ def test_java_import_simple():
     # Do we want / can we get the full path java.util.ArrayList?
     assert "ArrayList" in imports
 
+def test_java_import_simple():
+    config = sm.init("tests/testcases/javascript/imports/simple.js")
+    imports = sm.find_imports(config)
+
+    assert '"d3"' in imports
+
 def test_python_import_simple():
     config = sm.init("tests/testcases/python/imports/simple.py")
     imports = sm.find_imports(config)
