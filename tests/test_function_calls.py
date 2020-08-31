@@ -9,8 +9,6 @@ def test_python_function_calls_simple():
 def test_python_function_calls_instance():
     config = sm.init("tests/testcases/python/function_calls/instance.py")
     calls = sm.all_function_calls(config)
-    import sys
-    print(calls, file=sys.stderr)
     assert len(calls) == 3
     for call in calls:
         if call.name == "write":
