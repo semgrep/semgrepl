@@ -40,7 +40,7 @@ class SemgreplFunctionCall(SemgreplObject):
         self.match = match
 
         if '$INSTANCE' in metavars:
-            self.instance = metavars['$X']['abstract_content']
+            self.instance = metavars['$INSTANCE']['abstract_content']
 
         if '$NAME' in metavars:
             self.name = metavars['$NAME']['abstract_content']
