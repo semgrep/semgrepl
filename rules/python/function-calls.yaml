@@ -1,10 +1,10 @@
 rules:
     - id: python-function-calls
-      message: $X.{{function_name}}
+      message: $INSTANCE.{{function_name}}
       languages: [python]
       severity: WARNING
       pattern-either:
         - pattern: |
-            $X.{{function_name}}
+            $INSTANCE.{{function_name}}(...)
         - pattern: |
-            {{function_name}}
+            {{function_name}}(...)

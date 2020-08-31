@@ -225,7 +225,7 @@ def function_calls_by_name(semgrepl_config: SemgreplConfig, function_name: str) 
     return call_matches
 
 def all_function_calls(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionCall]:
-    return function_calls_by_name(semgrepl_config, "$X")
+    return function_calls_by_name(semgrepl_config, "$NAME")
 
 def function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionDef]:
     template_vars = {"function_name": function_name}

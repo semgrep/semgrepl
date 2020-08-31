@@ -39,8 +39,15 @@ class SemgreplFunctionCall(SemgreplObject):
         self.instance = None
         self.match = match
 
-        if '$X' in metavars:
+        if '$INSTANCE' in metavars:
             self.instance = metavars['$X']['abstract_content']
+
+        if '$NAME' in metavars:
+            self.name = metavars['$NAME']['abstract_content']
+
+    @property
+    def location(self):
+        return "{}:{}".format(self.file_path, self.start['line'])
 
     def __repr__(self):
         return "<SemgreplFunctionCall file_path={} name={} instance={}>".format(self.file_path, self.name, self.instance)
