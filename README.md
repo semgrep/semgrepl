@@ -38,7 +38,7 @@ For example, to find all function definitions in the file `semgrepl/main.py`.
 ```
 import semgrepl.main as sm
 config = sm.init("semgrepl/main.py")
-sm.find_all_function_defs(config)
+sm.all_function_defs(config)
 ```
 
 ### `semgrepl_init`

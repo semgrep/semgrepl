@@ -213,38 +213,41 @@ def _render_and_run(semgrepl_config: SemgreplConfig, rules_yaml_file: str, templ
 
     return matches
 
-def find_imports(semgrepl_config: SemgreplConfig) -> List[SemgreplImport]:
+def imports(semgrepl_config: SemgreplConfig) -> List[SemgreplImport]:
     matches = _render_and_run(semgrepl_config, "imports.yaml")
-    import_matches = [semgrepl.abstract.SemgreplImport(x) for x in matches]
+    import_matches = [SemgreplImport(x) for x in matches]
     return collect_matches(lambda i: i.import_path, import_matches)
 
-def find_function_calls(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionCall]:
+def function_calls_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionCall]:
     template_vars = {"function_name": function_name}
     matches = _render_and_run(semgrepl_config, "function-calls.yaml", template_vars)
-    call_matches = [semgrepl.abstract.SemgreplFunctionCall(function_name, x) for x in matches]
+    call_matches = [SemgreplFunctionCall(function_name, x) for x in matches]
     return call_matches
 
-def find_function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionDef]:
+def all_function_calls(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionCall]:
+    return function_calls_by_name(semgrepl_config, "$X")
+
+def function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionDef]:
     template_vars = {"function_name": function_name}
     matches = _render_and_run(semgrepl_config, "function-defs.yaml", template_vars)
-    function_def_matches = [semgrepl.abstract.SemgreplFunctionDef(x, function_name) for x in matches]
+    function_def_matches = [SemgreplFunctionDef(x, function_name) for x in matches]
     return function_def_matches
 
-def find_all_function_defs(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionDef]:
-    return find_function_defs_by_name(semgrepl_config, "$X")
+def all_function_defs(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionDef]:
+    return function_defs_by_name(semgrepl_config, "$X")
 
-def find_classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
+def classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
     template_vars = {"class_name": class_name}
     matches = _render_and_run(semgrepl_config, "classes.yaml", template_vars)
-    class_matches = [semgrepl.abstract.SemgreplClass(x, class_name) for x in matches]
+    class_matches = [SemgreplClass(x, class_name) for x in matches]
     return class_matches
 
-def find_all_classes(semgrepl_config: SemgreplConfig):
-    return find_classes_by_name(semgrepl_config, "$X")
+def all_classes(semgrepl_config: SemgreplConfig):
+    return classes_by_name(semgrepl_config, "$X")
 
 def all_annotations(semgrepl_config: SemgreplConfig):
     annotations = set()
-    all_functions = find_all_function_defs(semgrepl_config)
+    all_functions = all_function_defs(semgrepl_config)
     for f in all_functions:
         for a in f.annotations:
             annotations.add(a)
@@ -252,5 +255,5 @@ def all_annotations(semgrepl_config: SemgreplConfig):
 
 def strings(semgrepl_config: SemgreplConfig):
     matches = _render_and_run(semgrepl_config, "strings.yaml", semgrepl_config.targets)
-    string_matches = [semgrepl.abstract.SemgreplString(x) for x in matches['results']]
+    string_matches = [SemgreplString(x) for x in matches]
     return string_matches
