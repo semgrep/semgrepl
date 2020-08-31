@@ -61,3 +61,7 @@ config
 # See the various tech stacks used
 config.print_languages_used()
 ~~~
+
+### Running tests
+
+From root of repo, type `pytest`.

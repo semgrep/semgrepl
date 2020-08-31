@@ -10,7 +10,7 @@ from semgrep.output import OutputSettings
 from semgrep.constants import OutputFormat
 import semgrep.semgrep_main
 from jinja2 import Environment, FileSystemLoader
-import semgrepl.abstract import *
+from semgrepl.abstract import *
 import semgrepl.tokei
 from semgrepl.config import SemgreplConfig
 

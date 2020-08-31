@@ -14,8 +14,8 @@ class SemgreplImport(SemgreplObject):
         self.end = match['end']
         self.match = match
 
-        if '$X' in metavars:
-            self.import_path = metavars['$X']['abstract_content']
+        if '$MODULE' in metavars:
+            self.import_path = metavars['$MODULE']['abstract_content']
         else:
             print("Failed on file: " + self.file_path)
             self.import_path = "FAILED"
