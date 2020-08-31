@@ -37,7 +37,7 @@ with:
 For example, to find all function definitions in the file `semgrepl/main.py`.
 ```
 import semgrepl.main as sm
-c = sm.init("semgrepl/main.py")
+config = sm.init("semgrepl/main.py")
 sm.find_all_function_defs(c)
 ```
 
@@ -50,14 +50,14 @@ Use `semgrepl_init` to set your "working directory" of rules and target repo dir
 ~~~python
 import semgrepl.main as sm
 # Add 1 dir as a target
-c = sm.init(path_to_repo)
+config = sm.init(path_to_repo)
 
 # Or, Add every dir in a directory as a target, uses glob.glob()
-c = sml.init_dir("Users/me/target_repos/*")
+config = sm.init_dir("Users/me/target_repos/*")
 
 # Examine the config that's been set up
-c
+config
 
 # See the various tech stacks used
-c.print_languages_used()
+config.print_languages_used()
 ~~~
