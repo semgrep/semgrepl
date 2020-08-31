@@ -10,11 +10,11 @@ from semgrep.output import OutputSettings
 from semgrep.constants import OutputFormat
 import semgrep.semgrep_main
 from jinja2 import Environment, FileSystemLoader
-import semgrepl.abstract
+import semgrepl.abstract import *
 import semgrepl.tokei
 from semgrepl.config import SemgreplConfig
 
-# Prompt user during setup to define the scope of what they're testing 
+# Prompt user during setup to define the scope of what they're testing
 # (probably a repo), and the base rules dir.
 #
 #
@@ -26,7 +26,7 @@ from semgrepl.config import SemgreplConfig
 #   Why? Sometimes repos are polyglot
 #
 # - Do you specify a language in the argument? (this should always be an option)
-# - Can we infer it based on file extension or tools that infer language 
+# - Can we infer it based on file extension or tools that infer language
 #   from text?
 #
 # - Usually you probably have a main language you care about, maybe the user
@@ -131,13 +131,13 @@ DEFAULT_RULES_DIR = os.path.abspath('rules')
 # A default pack that runs all security rules
 SEMGREP_RULES_ALL_SECURITY = "https://semgrep.dev/p/r2c-security-audit"
 
-def init(target, rules_dir = DEFAULT_RULES_DIR, default_language = None):
+def init(target : str, rules_dir: str = DEFAULT_RULES_DIR, default_language: str = None):
     """ Run at the beginning of your session to set up your target and initialize semgrep.
     """
     semgrepl_config = SemgreplConfig([target], rules_dir, default_language)
     return semgrepl_config
 
-def init_dir(target_dir, rules_dir = DEFAULT_RULES_DIR, default_language = None):
+def init_dir(target_dir : str, rules_dir: str = DEFAULT_RULES_DIR, default_language: str = None):
     """ Run at the beginning of your session to set up your target
         Adds a whole dir to targets.
     """
@@ -150,7 +150,7 @@ def init_dir(target_dir, rules_dir = DEFAULT_RULES_DIR, default_language = None)
     semgrepl_config = SemgreplConfig(dirs, rules_dir, default_language)
     return semgrepl_config
 
-def semgrep_pattern(pattern: str, targets: List[str], config = ""):
+def semgrep_pattern(pattern: str, targets: List[str], config: str = ""):
     io_capture = StringIO()
     output_handler = OutputHandler(
         OutputSettings(
@@ -170,7 +170,7 @@ def semgrep_pattern(pattern: str, targets: List[str], config = ""):
     output_handler.close()
     return json.loads(io_capture.getvalue())
 
-def collect_matches(fn, matches: List[semgrepl.abstract.SemgreplObject]):
+def collect_matches(fn, matches: List[SemgreplObject]):
     ret = defaultdict(set)
     for match in matches:
         k = fn(match)
@@ -178,7 +178,7 @@ def collect_matches(fn, matches: List[semgrepl.abstract.SemgreplObject]):
     return ret
 
 # Organize SemgreplImports
-def collect_imports(imports : List[semgrepl.abstract.SemgreplImport]):
+def collect_imports(imports: List[SemgreplImport]):
     return collect_matches(lambda i: i.import_path, imports)
 
 # Dict returned from collect_matches: {"string_key": [SemgreplObj1, ...]}
@@ -189,7 +189,7 @@ def count_collection(obj_collection):
         result[key] = len(items)
     return result
 
-def _render_and_run(semgrepl_config, rules_yaml_file, template_vars={}):
+def _render_and_run(semgrepl_config: SemgreplConfig, rules_yaml_file: str, template_vars: Dict = {}):
     matches = []
     languages = list(semgrepl_config.languages)
     languages.append("")        # some rules work for all languages
@@ -213,36 +213,36 @@ def _render_and_run(semgrepl_config, rules_yaml_file, template_vars={}):
 
     return matches
 
-def find_imports(semgrepl_config) -> List[semgrepl.abstract.SemgreplImport]:
+def find_imports(semgrepl_config: SemgreplConfig) -> List[SemgreplImport]:
     matches = _render_and_run(semgrepl_config, "imports.yaml")
     import_matches = [semgrepl.abstract.SemgreplImport(x) for x in matches]
     return collect_matches(lambda i: i.import_path, import_matches)
 
-def find_function_calls(semgrepl_config, function_name) -> List[semgrepl.abstract.SemgreplFunctionCall]:
+def find_function_calls(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionCall]:
     template_vars = {"function_name": function_name}
     matches = _render_and_run(semgrepl_config, "function-calls.yaml", template_vars)
     call_matches = [semgrepl.abstract.SemgreplFunctionCall(function_name, x) for x in matches]
     return call_matches
 
-def find_function_defs_by_name(semgrepl_config, function_name) -> List[semgrepl.abstract.SemgreplFunctionDef]:
+def find_function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionDef]:
     template_vars = {"function_name": function_name}
     matches = _render_and_run(semgrepl_config, "function-defs.yaml", template_vars)
     function_def_matches = [semgrepl.abstract.SemgreplFunctionDef(x, function_name) for x in matches]
     return function_def_matches
 
-def find_all_function_defs(semgrepl_config) -> List[semgrepl.abstract.SemgreplFunctionDef]:
+def find_all_function_defs(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionDef]:
     return find_function_defs_by_name(semgrepl_config, "$X")
 
-def find_classes_by_name(semgrepl_config, class_name):
+def find_classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
     template_vars = {"class_name": class_name}
     matches = _render_and_run(semgrepl_config, "classes.yaml", template_vars)
     class_matches = [semgrepl.abstract.SemgreplClass(x, class_name) for x in matches]
     return class_matches
 
-def find_all_classes(semgrepl_config):
+def find_all_classes(semgrepl_config: SemgreplConfig):
     return find_classes_by_name(semgrepl_config, "$X")
 
-def all_annotations(semgrepl_config):
+def all_annotations(semgrepl_config: SemgreplConfig):
     annotations = set()
     all_functions = find_all_function_defs(semgrepl_config)
     for f in all_functions:
@@ -250,7 +250,7 @@ def all_annotations(semgrepl_config):
             annotations.add(a)
     return annotations
 
-def strings(semgrepl_config):
+def strings(semgrepl_config: SemgreplConfig):
     matches = _render_and_run(semgrepl_config, "strings.yaml", semgrepl_config.targets)
     string_matches = [semgrepl.abstract.SemgreplString(x) for x in matches['results']]
     return string_matches
