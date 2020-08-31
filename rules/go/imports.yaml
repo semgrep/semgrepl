@@ -1,0 +1,12 @@
+rules:
+    - id: python-imports
+      message: $MODULE
+      languages: [golang]
+      severity: WARNING
+      metadata:
+        category: "import"
+      pattern-either:
+        - pattern: |
+            import (
+              "$MODULE"
+            )

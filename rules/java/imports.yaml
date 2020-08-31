@@ -1,10 +1,10 @@
 rules:
-    - id: python-imports
-      message: $X
-      languages: [python]
+    - id: java-imports
+      message: $MODULE
+      languages: [java]
       severity: WARNING
       metadata:
         category: "import"
       pattern-either:
         - pattern: |
-            import $X
+            import $MODULE;
