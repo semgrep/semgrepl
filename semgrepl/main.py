@@ -254,6 +254,6 @@ def all_annotations(semgrepl_config: SemgreplConfig):
     return annotations
 
 def strings(semgrepl_config: SemgreplConfig):
-    matches = _render_and_run(semgrepl_config, "strings.yaml", semgrepl_config.targets)
+    matches = _render_and_run(semgrepl_config, "strings.yaml")
     string_matches = [SemgreplString(x) for x in matches]
     return string_matches
