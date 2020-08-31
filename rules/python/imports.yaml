@@ -1,6 +1,6 @@
 rules:
     - id: python-imports
-      message: $X
+      message: $MODULE
       languages: [python]
       severity: WARNING
       metadata:
