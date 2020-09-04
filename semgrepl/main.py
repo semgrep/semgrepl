@@ -251,7 +251,7 @@ def classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
     class_matches = [SemgreplClass(x, class_name) for x in matches]
     return class_matches
 
-def lasses(semgrepl_config: SemgreplConfig):
+def classes(semgrepl_config: SemgreplConfig):
     return classes_by_name(semgrepl_config, "$X")
 
 # What should this do?
