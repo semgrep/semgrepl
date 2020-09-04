@@ -7,4 +7,4 @@ rules:
         category: "import"
       pattern-either:
         - pattern: |
-            import $MODULE;
+            import $A;

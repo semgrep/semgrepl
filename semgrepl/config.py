@@ -9,12 +9,14 @@ SEMGREP_SUPPORTED_LANGUAGES = ["python", "go", "java", "javascript", "ruby"]
 class SemgreplConfig:
     """ Object holding configuration for targets.
     """
-    def __init__(self, targets, rules_dir = "", default_language = None):
+    def __init__(self, targets, rules_dir = "", default_language = None, exclude_paths = []):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.rules_dir = os.path.abspath(rules_dir)
         self.default_language = default_language
 
+         # By default, semgrep runs won't consider these paths
+        self.exclude_paths = exclude_paths
         self.targets = targets
 
         # Make all targets absolute paths

@@ -126,7 +126,9 @@ from semgrepl.config import SemgreplConfig
 
 
 # Default to the rules dir in this repo
-DEFAULT_RULES_DIR = os.path.abspath('rules')
+DEFAULT_RULES_DIR = os.path.abspath(
+    os.path.join(__file__, '..', '..', 'rules')
+    )
 
 # A default pack that runs all security rules
 SEMGREP_RULES_ALL_SECURITY = "https://semgrep.dev/p/r2c-security-audit"
@@ -150,7 +152,7 @@ def init_dir(target_dir : str, rules_dir: str = DEFAULT_RULES_DIR, default_langu
     semgrepl_config = SemgreplConfig(dirs, rules_dir, default_language)
     return semgrepl_config
 
-def semgrep_pattern(pattern: str, targets: List[str], config: str = ""):
+def semgrep_pattern(pattern: str, targets: List[str], exclude_paths: List = [], config: str = ""):
     io_capture = StringIO()
     output_handler = OutputHandler(
         OutputSettings(
@@ -166,20 +168,17 @@ def semgrep_pattern(pattern: str, targets: List[str], config: str = ""):
         target=[str(os.path.abspath(t)) for t in targets],
         pattern=pattern,
         config=config,
-        lang="python")
+        lang="python",
+        exclude=exclude_paths)
+
     output_handler.close()
     return json.loads(io_capture.getvalue())
 
-def collect_matches(fn, matches: List[SemgreplObject]):
+def collect_matches(matches: List[SemgreplObject]):
     ret = defaultdict(set)
     for match in matches:
-        k = fn(match)
-        ret[k].add(match)
+        ret[match.key].add(match)
     return ret
-
-# Organize SemgreplImports
-def collect_imports(imports: List[SemgreplImport]):
-    return collect_matches(lambda i: i.import_path, imports)
 
 # Dict returned from collect_matches: {"string_key": [SemgreplObj1, ...]}
 # Returns: {"key": count, "key2": count}
@@ -188,6 +187,16 @@ def count_collection(obj_collection):
     for key, items in obj_collection.items():
         result[key] = len(items)
     return result
+
+# Given a list of SemgreplObjects, print
+# <key name>: count to STDOUT
+def print_match_summary(matches: List[SemgreplObject]):
+    collected = collect_matches(matches)
+    counts = count_collection(collected)
+
+    s = sorted(counts.items(), key=lambda x: x[1], reverse=False)
+    for (key, matches) in s:
+        print("{}: {}".format(key, matches))
 
 def _render_and_run(semgrepl_config: SemgreplConfig, rules_yaml_file: str, template_vars: Dict = {}):
     matches = []
@@ -208,7 +217,7 @@ def _render_and_run(semgrepl_config: SemgreplConfig, rules_yaml_file: str, templ
         tf = tempfile.NamedTemporaryFile(mode='wt')
         tf.write(rendered_config)
         tf.flush()
-        matches.extend(semgrep_pattern("", semgrepl_config.targets, tf.name)['results'])
+        matches.extend(semgrep_pattern("", semgrepl_config.targets, semgrepl_config.exclude_paths, tf.name)['results'])
         tf.close()
 
     return matches
@@ -216,7 +225,7 @@ def _render_and_run(semgrepl_config: SemgreplConfig, rules_yaml_file: str, templ
 def imports(semgrepl_config: SemgreplConfig) -> List[SemgreplImport]:
     matches = _render_and_run(semgrepl_config, "imports.yaml")
     import_matches = [SemgreplImport(x) for x in matches]
-    return collect_matches(lambda i: i.import_path, import_matches)
+    return import_matches
 
 def function_calls_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionCall]:
     template_vars = {"function_name": function_name}
@@ -224,7 +233,7 @@ def function_calls_by_name(semgrepl_config: SemgreplConfig, function_name: str) 
     call_matches = [SemgreplFunctionCall(function_name, x) for x in matches]
     return call_matches
 
-def all_function_calls(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionCall]:
+def function_calls(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionCall]:
     return function_calls_by_name(semgrepl_config, "$NAME")
 
 def function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -> List[SemgreplFunctionDef]:
@@ -233,7 +242,7 @@ def function_defs_by_name(semgrepl_config: SemgreplConfig, function_name: str) -
     function_def_matches = [SemgreplFunctionDef(x, function_name) for x in matches]
     return function_def_matches
 
-def all_function_defs(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionDef]:
+def function_defs(semgrepl_config: SemgreplConfig) -> List[SemgreplFunctionDef]:
     return function_defs_by_name(semgrepl_config, "$X")
 
 def classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
@@ -242,12 +251,13 @@ def classes_by_name(semgrepl_config: SemgreplConfig, class_name: str):
     class_matches = [SemgreplClass(x, class_name) for x in matches]
     return class_matches
 
-def all_classes(semgrepl_config: SemgreplConfig):
+def lasses(semgrepl_config: SemgreplConfig):
     return classes_by_name(semgrepl_config, "$X")
 
-def all_annotations(semgrepl_config: SemgreplConfig):
+# What should this do?
+def annotations(semgrepl_config: SemgreplConfig):
     annotations = set()
-    all_functions = all_function_defs(semgrepl_config)
+    all_functions = function_defs(semgrepl_config)
     for f in all_functions:
         for a in f.annotations:
             annotations.add(a)

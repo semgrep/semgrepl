@@ -7,4 +7,22 @@ rules:
         category: "import"
       pattern-either:
         - pattern: |
-            import $MODULE
+            import $A.$B.$C.$D.$E.$F.$G.$H.$I.$J
+        - pattern: |
+            import $A.$B.$C.$D.$E.$F.$G.$H.$I
+        - pattern: |
+            import $A.$B.$C.$D.$E.$F.$G.$H
+        - pattern: |
+            import $A.$B.$C.$D.$E.$F.$G
+        - pattern: |
+            import $A.$B.$C.$D.$E.$F
+        - pattern: |
+            import $A.$B.$C.$D.$E
+        - pattern: |
+            import $A.$B.$C.$D
+        - pattern: |
+            import $A.$B.$C
+        - pattern: |
+            import $A.$B
+        - pattern: |
+            import $A

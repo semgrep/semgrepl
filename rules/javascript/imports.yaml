@@ -7,12 +7,12 @@ rules:
         category: "import"
       pattern-either:
         - pattern: |
-            import $NAME from "$MODULE";
+            import $NAME from "$A";
         - pattern: |
-            import { $NAME } from "$MODULE";
+            import { $NAME } from "$A";
         - pattern: |
-            import * as $NAME from "$MODULE";
+            import * as $NAME from "$A";
         - pattern: |
-            import "$MODULE";
+            import "$A";
         - pattern: |
-            var $NAME = import($MODULE);
+            var $NAME = import($A);
