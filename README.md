@@ -1,6 +1,38 @@
 # semgrepl
 
-Cool hack project.
+[Semgrep](https://github.com/returntocorp/semgrep) is a powerful, lightweight
+static analysis tool that makes it easy to bugs or potential code of interest
+across many languages.
+
+The default Semgrep workflow is to write patterns that find what you're looking for, and then review the results.
+
+`semgrepl` (a combination of "Semgrep" and "REPL"), on the other hand, aims to
+enable you to *iteratively*, *interactively* search code. For example:
+* Find all of a web app's routes. Then, filter them down based to the routes not
+  requiring a certain annotation (e.g. `@requires_authentication`) or routes
+  that lead to potentially dangerous code like an unparameterized SQL query.
+* Find all methods that call potentially sketchy APIs like `eval()`, `exec()` or
+  running shell commands. Then, recursively find methods calling those methods
+  until you reach an entry point, like a `main()` method or HTTP endpoint.
+
+In short, `semgrepl` allows you run Semgrep patterns programmatically via a
+Python REPL and load the results back and interact with them as Python objects.
+The results of prior queries can then be used to customize future ones.
+
+## How It Works
+
+* `main.py` wraps running the Semgrep binary and has a number of helper
+  functions that do common tasks like extracting imports, finding function
+  definitions, etc.
+* `rules/` contains a number of Semgrep patterns that are used by `main.py` and
+  other parts of `semgrepl`. Note that some of these patterns are templatized
+  using [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/) to allow
+  programmatically running slightly different but similar Semgrep patterns; for
+  example, find all methods named `<user input>`.
+* `notebooks/` contains example Python Jupyter notebooks that illustrate usage
+  of `semgrepl`.
+
+
 
 ## Getting Set Up
 
